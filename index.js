@@ -73,8 +73,8 @@ chrome.extension.sendRequest({method: "getLocalStorage"}, function(response) {
 
 NOBBB.config.facebook = {
 	
-	content_stream: '#home_stream',
-	content_list_selector: 'li.uiStreamStory',
+	content_stream: '#contentArea',
+	content_list_selector: 'div._5uch',
 	content_logo: '#pageLogo',
 	content_logo_href: 'http://www.facebook.com/?ref=logo',
 	alert_component: "<div style='padding:10px; height:18px; background:#F0E68C;'><img src='"+chrome.extension.getURL("resources/logo19.png")
@@ -220,12 +220,12 @@ NOBBB.facebook = function(){
 
 	var searchBBB = function(){
 		var hists = document.querySelectorAll(NOBBB.config.facebook.content_list_selector);
-		
+
 		for(var h = 0; h < hists.length; h++){
 			
-			var cont = hists[h].getElementsByClassName('storyContent')[0];
-			var mainWrapper = cont.getElementsByClassName('mainWrapper')[0];
-			var messageBody = mainWrapper.getElementsByClassName('messageBody')[0];
+			var cont = hists[h].getElementsByClassName('userContentWrapper')[0];
+			var mainWrapper = cont.getElementsByClassName('_5pax')[0];
+			var messageBody = mainWrapper.getElementsByClassName('userContent')[0];
 			if(NOBBB.config.general.default_words != ""){
 				if(messageBody && messageBody.innerHTML.match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi')) && !itemsChanged.hasOwnProperty(hists[h].id)){
 					itemsChanged[hists[h].id] = true;
@@ -234,11 +234,11 @@ NOBBB.facebook = function(){
 					d.className = NOBBB.config.general.divcontent_class;
 					d.innerHTML = NOBBB.config.facebook.alert_component;
 					d.onmousedown = function(evt,a){
-						if(evt.target.parentElement.parentElement.getElementsByClassName('storyContent')[0]){
-							evt.target.parentElement.parentElement.getElementsByClassName('storyContent')[0].style.display = "block";
+						if(evt.target.parentElement.parentElement.getElementsByClassName('userContentWrapper')[0]){
+							evt.target.parentElement.parentElement.getElementsByClassName('userContentWrapper')[0].style.display = "block";
 							evt.target.parentElement.parentElement.removeChild(evt.target.parentElement.parentElement.getElementsByClassName(NOBBB.config.general.divcontent_class)[0]);
 						}else{
-							evt.target.parentElement.parentElement.parentElement.getElementsByClassName('storyContent')[0].style.display = "block";
+							evt.target.parentElement.parentElement.parentElement.getElementsByClassName('userContentWrapper')[0].style.display = "block";
 							evt.target.parentElement.parentElement.parentElement.removeChild(evt.target.parentElement.parentElement.parentElement.getElementsByClassName(NOBBB.config.general.divcontent_class)[0]);
 						}				
 					}
