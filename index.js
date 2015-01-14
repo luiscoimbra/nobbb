@@ -21,7 +21,6 @@ NOBBB.Util = {
 	}
 };
 
-
 //window.setTimeout(function(){
 chrome.extension.sendRequest({method: "getLocalStorage"}, function(response) {
 
@@ -62,7 +61,10 @@ chrome.extension.sendRequest({method: "getLocalStorage"}, function(response) {
 		}
 	}
 	
-   NOBBB.init();
+	jQuery(document).ready(function() {
+		NOBBB.init();
+	});
+  
 });
 //},1000);
 
@@ -102,7 +104,7 @@ NOBBB.config.uol = {
 }
 
 NOBBB.config.portal = {
-	alert_component: "<div style='background:#F0E68C; padding:2px; height:100%;' class='nobbb_portal_container' ><img src='"+chrome.extension.getURL("resources/logo19.png")
+	alert_component: "<div style='background:#F0E68C; position:absolute; padding:2px; width:100%; height:100%; z-index:9999;'  class='nobbb_portal_container' ><img src='"+chrome.extension.getURL("resources/logo19.png")
 		+"' style='float:left; width: 19px; height: 19px' ><div style='margin:2px 0 0 30px; font-size:10px;'>conte&uacute;do bloqueado pela extens&atilde;o NoBBB, se quiser ver clique aqui<br>"
 		+"<a style='font-size: 9px; float:right;' href='http://twitter.com/luiscoimbra' target='_blank'>by luiscoimbra</a></div><div style='clear:both;'></div></div>"
 }
@@ -198,7 +200,7 @@ NOBBB.util.getSocialNetwork = function(){
 	if(url.match(/r7.com/)){
 		sn = "r7";
 	}
-	if(url.match(/msn.com/)){
+	if(url.match(/msn.com\/pt-br/)){
 		sn = "msn";
 	}
 	if(url.match(/yahoo.com/)){
@@ -216,54 +218,31 @@ NOBBB.util.getSocialNetwork = function(){
 
 NOBBB.facebook = function(){
 
-	var itemsChanged = {};
-
-	var searchBBB = function(){
-		var hists = document.querySelectorAll(NOBBB.config.facebook.content_list_selector);
-
-		for(var h = 0; h < hists.length; h++){
-			
-			var cont = hists[h].getElementsByClassName('userContentWrapper')[0];
-			var mainWrapper = cont.getElementsByClassName('_5pax')[0];
-			var messageBody = mainWrapper.getElementsByClassName('userContent')[0];
-			if(NOBBB.config.general.default_words != ""){
-				if(messageBody && messageBody.innerHTML.match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi')) && !itemsChanged.hasOwnProperty(hists[h].id)){
-					itemsChanged[hists[h].id] = true;
-					cont.style.display = "none";
-					var d = document.createElement('div');
-					d.className = NOBBB.config.general.divcontent_class;
-					d.innerHTML = NOBBB.config.facebook.alert_component;
-					d.onmousedown = function(evt,a){
-						if(evt.target.parentElement.parentElement.getElementsByClassName('userContentWrapper')[0]){
-							evt.target.parentElement.parentElement.getElementsByClassName('userContentWrapper')[0].style.display = "block";
-							evt.target.parentElement.parentElement.removeChild(evt.target.parentElement.parentElement.getElementsByClassName(NOBBB.config.general.divcontent_class)[0]);
-						}else{
-							evt.target.parentElement.parentElement.parentElement.getElementsByClassName('userContentWrapper')[0].style.display = "block";
-							evt.target.parentElement.parentElement.parentElement.removeChild(evt.target.parentElement.parentElement.parentElement.getElementsByClassName(NOBBB.config.general.divcontent_class)[0]);
-						}				
-					}
-					hists[h].appendChild(d);
-				}
-			}
-			
-		}
+	var userContentEach = function(userContentArray) {
+		userContentArray.each(function() {
+			if ($(this).text().match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi'))) {
+				// console.log($(this));
+				// debugger;
+				$(this).find('p').append(NOBBB.config.facebook.alert_component);
+			};
+		});
 	};
+
+	$('#contentArea').on('DOMNodeInserted', function(a){ 
+    	// searchBBB();
+    	if (a.target.tagName==='DIV' && a.target.className !== '_4ikz' && $(a.target.innerHTML).find('.userContent').text()) {
+    		// console.log($(a.target.innerHTML).find('.userContent'));
+    		window.setTimeout(function() {
+    			userContentEach($(a.target.innerHTML).find('.userContent'));
+    		}, 500);
+	    	
+	    }
+    });
+
+ //    user_content = $('.userContent');
+	// userContentEach(user_content);
 	
-	var main_contentArea = document.querySelector(NOBBB.config.facebook.content_stream);
-	
-	var getMain = function (){
-        if (!main_contentArea){
-            console.log(main_contentArea);
-            main_contentArea = document.querySelector(NOBBB.config.facebook.content_stream);
-            window.setTimeout(getMain, 500);
-        } else {
-            main_contentArea.addEventListener('DOMNodeInserted', function(){ searchBBB(); });
-        }
-    }
-    
-    getMain();
-	
-	document.querySelector(NOBBB.config.facebook.content_logo).onmousedown = function(){this.itemsChanged = {}; window.location.href =  NOBBB.config.facebook.content_logo_href;   } 
+	// document.querySelector(NOBBB.config.facebook.content_logo).onmousedown = function(){this.itemsChanged = {}; window.location.href =  NOBBB.config.facebook.content_logo_href;   } 
 	
 };
 
@@ -346,11 +325,11 @@ NOBBB.uol = function() {
 }
 
 NOBBB.terra = function(){
-	NOBBB.portal('#trr-ctn-content');
+	NOBBB.portal('#trr-ctn-general', 'terra');
 }
 
 NOBBB.globo = function(){
-	NOBBB.portal('#bloco-principal');
+	NOBBB.portal('#home-pagecontent');
 }
 
 NOBBB.ig = function(){
@@ -358,61 +337,44 @@ NOBBB.ig = function(){
 }
 
 NOBBB.r7 = function(){
-	NOBBB.portal('.r7-container');
+	NOBBB.portal('#content_scheme');
 }
 
 NOBBB.msn = function(){
-	NOBBB.portal('#page');
+	NOBBB.portal('#maincontent');
 }
 
 NOBBB.yahoo = function(){
-	NOBBB.portal('#y-cols');
+	NOBBB.portal('.yui3-skin-sam');
 }
 
-NOBBB.portal = function (main_area){
-	
-	var itemsChanged = [], cont, h, i, hists, d, e, prov, pe, evtpe, divnb;
+NOBBB.portal = function (main_area, portal){
 
 	var searchBBB = function(){
-		hists = main_contentArea.getElementsByTagName('a');
-		for(h = 0; h < hists.length; h++){
-			
-			cont = hists[h];
-			if(NOBBB.config.general.default_words != ""){
-				if(cont && (cont.innerHTML.match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi')) || cont.href.match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi'))) && !NOBBB.Util.contains(cont, itemsChanged)){
-					itemsChanged.push(cont);
-					pe = cont.parentElement;
-					pe.style.position = "relative";
-
-					d = document.createElement('div');
-					d.style.position = "absolute";
-					d.style.top = 0;
-					d.style.width = "100%";
-					d.style.height = "100%";
-					d.className = NOBBB.config.general.divcontent_class + " nobbb_portal_blocker";
-					d.innerHTML = NOBBB.config.portal.alert_component;
-					d.onmousedown = function(evt,a){
-						evtpe = evt.target.parentElement;
-						while(evtpe.className.match(/nobbb/)){
-							evtpe = evtpe.parentElement;
-						}
-						divnb = evtpe.getElementsByClassName('noBBBblocker');
-						for (i = 0; i < divnb.length; i++) {
-							try {
-								evtpe.removeChild(divnb[i]);
-							} catch (e) {}
-						}
-					}
-					if (pe.appendChild) {
-						pe.appendChild(d);
-					}
-				}
-			}
-			
+		
+		if (portal && portal === "terra") {
+			items = main_contentArea.find('p');
+			console.log('terra selec', items);
+		} else {
+			items = main_contentArea.find('a');
 		}
+		jQuery(items).each(function() {
+			if ($(this).text().match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi'))) {
+				$(this).css('position', 'relative');
+				$(this).prepend(NOBBB.config.portal.alert_component);
+			}
+		});
+
+		$('.nobbb_portal_container').on('click', function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(this).parent().find('.nobbb_portal_container').remove();
+			
+		});
+
 	};
 	
-	var main_contentArea = document.querySelector(main_area);
+	var main_contentArea = $(main_area);
 	//main_contentArea.addEventListener('DOMNodeInserted', function(){ searchBBB(); });
 	searchBBB();
 }

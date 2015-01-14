@@ -102,6 +102,8 @@ NOBBB.Config = {
 NOBBB.Controller = {
 	
 	init: function(){
+
+		document.querySelector('#version').innerHTML = chrome.runtime.getManifest().version;
 	
 		this.changeCard('#config-container','#tabcontent');
 		if(!localStorage.init){

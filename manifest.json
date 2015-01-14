@@ -1,6 +1,6 @@
 {
   "name": "No BBB",
-  "version": "3.1",
+  "version": "4",
   "manifest_version": 2,
   "background": {
 	"scripts": ["back.js"]
@@ -40,9 +40,9 @@
 		"http://www.globo.com/*",
 		"http://www.ig.com.br/*",
 		"http://www.r7.com/*",
-		"http://br.msn.com/*",
-		"http://br.yahoo.com/*"],
-	"js": ["index.js"]
+		"http://*.msn.com/*",
+		"https://br.yahoo.com/*"],
+	"js": ["index.js", "jquery-2.1.3.min.js"]
   }],
   "web_accessible_resources": [
 	"resources/logo19.png"
