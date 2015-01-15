@@ -79,7 +79,7 @@ NOBBB.config.facebook = {
 	content_list_selector: 'div._5uch',
 	content_logo: '#pageLogo',
 	content_logo_href: 'http://www.facebook.com/?ref=logo',
-	alert_component: "<div style='padding:10px; height:18px; background:#F0E68C;'><img src='"+chrome.extension.getURL("resources/logo19.png")
+	alert_component: "<div style='padding:10px; height:18px; background:#F0E68C;'  class='nobbb_portal_container'><img src='"+chrome.extension.getURL("resources/logo19.png")
 		+"' style='float:left' ><div style='margin:2px 0 0 30px;'>conte&uacute;do bloqueado pela extens&atilde;o NoBBB, se quiser ver clique aqui<br>"
 		+"<a style='font-size: 9px; float:right;' href='http://facebook.com/luiscesarcoimbra' target='_blank'>by luiscoimbra</a></div></div>"
 	
@@ -218,26 +218,55 @@ NOBBB.util.getSocialNetwork = function(){
 
 NOBBB.facebook = function(){
 
+	var parentEl, parentParentEl, userContentLength = 0;
+
 	var userContentEach = function(userContentArray) {
-		userContentArray.each(function() {
+		userContentArray.slice(userContentLength).each(function() {
 			if ($(this).text().match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi'))) {
-				// console.log($(this));
-				// debugger;
-				$(this).find('p').append(NOBBB.config.facebook.alert_component);
+				parentEl = $(this).parent();
+				parentParentEl = parentEl.parent();
+				parentParentEl.find('.userContentWrapper').hide();
+				if (!parentParentEl.has('.nobbb_portal_container').length) {
+					parentParentEl.prepend(NOBBB.config.facebook.alert_component);
+					parentParentEl.find('.nobbb_portal_container').on('click', function() {
+						console.log('clicking');
+						$(this).hide();
+						$(this).parent().find('.userContentWrapper').show();
+					});
+				}
 			};
 		});
 	};
 
-	$('#contentArea').on('DOMNodeInserted', function(a){ 
-    	// searchBBB();
-    	if (a.target.tagName==='DIV' && a.target.className !== '_4ikz' && $(a.target.innerHTML).find('.userContent').text()) {
-    		// console.log($(a.target.innerHTML).find('.userContent'));
-    		window.setTimeout(function() {
-    			userContentEach($(a.target.innerHTML).find('.userContent'));
-    		}, 500);
+	$('#contentArea').on('DOMNodeInserted', function(a) {
+		if (userContentLength !== $('.userContent').length) {
+			userContentEach($('.userContent'));
+			userContentLength = $('.userContent').length;
+		}
+	});
+
+	userContentEach($('.userContent'));
+
+	userContentLength = $('.userContent:not(_5pbx)').length;
+
+	// $('#contentArea').on('DOMSubtreeModified', function(a){ 
+    	 
+    	// if (a.target.tagName==='DIV' && $(a.target.innerHTML).first().find('.userContent')) {
+    	// 	console.log(a.target.tagName);
+	    // 	console.log(a.target.className);
+	    // 	$(a.target.innerHTML).find('.userContent').text();
+	    // 	console.log("####");
+    	// }
+    	// debugger;
+    	// if (a.target.tagName==='DIV' && a.target.className !== '_4ikz' && $(a.target.innerHTML).find('.userContent').text()) {
+    	// 	// console.log($(a.target.innerHTML).find('.userContent'));
+
+    	// 	// window.setTimeout(function() {
+    	// 	// 	userContentEach($(a.target.innerHTML).find('.userContent'));
+    	// 	// }, 500);
 	    	
-	    }
-    });
+	    // }
+    // });
 
  //    user_content = $('.userContent');
 	// userContentEach(user_content);
