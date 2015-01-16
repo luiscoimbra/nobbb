@@ -15,6 +15,8 @@ NOBBB.setEvents = function () {
 	document.getElementById('words-button').onclick = function () {
 		NOBBB.Controller.select('words');
 	};
+
+	document.querySelector('.bgcolor').onchange = NOBBB.Config.changeBG;
 	
 	for (i = 0; i < chks.length; i++) {
 		chks[i].onchange = function () {
@@ -75,6 +77,7 @@ NOBBB.Config = {
 		ig: 'true',
 		msn: 'true',
 		yahoo: 'true',
+		bgcolor: '#F0E68C',
 		words: '',
 		words_pass: '',
 		frozen_init: 'false',
@@ -92,6 +95,13 @@ NOBBB.Config = {
 	check: function(el){
 		var e = el.id.replace('chk','');
 		localStorage[e] = el.checked;
+		NOBBB.Controller.updateLocal();
+		NOBBB.Controller.updateWords();
+		NOBBB.Controller.updateStatus();
+	},
+
+	changeBG: function(element) {
+		localStorage['bgcolor'] = element.target.value;
 		NOBBB.Controller.updateLocal();
 		NOBBB.Controller.updateWords();
 		NOBBB.Controller.updateStatus();
@@ -182,6 +192,7 @@ NOBBB.Controller = {
 	},
 	
 	setPreferences: function(){
+		document.querySelector('.bgcolor').value = NOBBB.Config.local.bgcolor;
 		document.querySelector('#chktwitter').checked = this.bool(NOBBB.Config.local.twitter);
 		document.querySelector('#chkfacebook').checked = this.bool(NOBBB.Config.local.facebook);
 		document.querySelector('#chkuol').checked = this.bool(NOBBB.Config.local.uol);

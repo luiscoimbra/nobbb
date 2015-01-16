@@ -4,6 +4,7 @@ chrome.extension.onRequest.addListener(
 				"from a content script:" + sender.tab.url :
 				"from the extension");
 	sendResponse({
+		bgcolor: localStorage.bgcolor,
 		twitter: localStorage.twitter,
 		facebook: localStorage.facebook,
 		uol: localStorage.uol,
