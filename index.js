@@ -220,58 +220,35 @@ NOBBB.facebook = function(){
 
 	var parentEl, parentParentEl, userContentLength = 0;
 
-	var userContentEach = function(userContentArray) {
-		userContentArray.slice(userContentLength).each(function() {
-			if ($(this).text().match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi'))) {
-				parentEl = $(this).parent();
-				parentParentEl = parentEl.parent();
-				parentParentEl.find('.userContentWrapper').hide();
-				if (!parentParentEl.has('.nobbb_portal_container').length) {
-					parentParentEl.prepend(NOBBB.config.facebook.alert_component);
-					parentParentEl.find('.nobbb_portal_container').on('click', function() {
-						console.log('clicking');
-						$(this).hide();
-						$(this).parent().find('.userContentWrapper').show();
-					});
+	var userContentEach = function() {
+		$('.userContent').each(function() {
+			if (!$(this).hasClass('nobbb_edited_content')) {
+				if ($(this).text().match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi'))) {
+					$(this).addClass('nobbb_edited_content');
+					parentEl = $(this).parent();
+					parentParentEl = parentEl.parent();
+					parentParentEl.find('.userContentWrapper').hide();
+					if (!parentParentEl.has('.nobbb_portal_container').length) {
+						parentParentEl.prepend(NOBBB.config.facebook.alert_component);
+						$('.nobbb_portal_container').on('click', function() {
+							$(this).hide();
+							$(this).parent().find('.userContentWrapper').show();
+						});
+					}
 				}
-			};
+			}
 		});
 	};
 
-	$('#contentArea').on('DOMNodeInserted', function(a) {
-		if (userContentLength !== $('.userContent').length) {
-			userContentEach($('.userContent'));
-			userContentLength = $('.userContent').length;
-		}
+	$('#contentArea').on('DOMNodeInserted', function() {
+		userContentEach();
 	});
 
-	userContentEach($('.userContent'));
+	userContentEach();
 
-	userContentLength = $('.userContent:not(_5pbx)').length;
-
-	// $('#contentArea').on('DOMSubtreeModified', function(a){ 
-    	 
-    	// if (a.target.tagName==='DIV' && $(a.target.innerHTML).first().find('.userContent')) {
-    	// 	console.log(a.target.tagName);
-	    // 	console.log(a.target.className);
-	    // 	$(a.target.innerHTML).find('.userContent').text();
-	    // 	console.log("####");
-    	// }
-    	// debugger;
-    	// if (a.target.tagName==='DIV' && a.target.className !== '_4ikz' && $(a.target.innerHTML).find('.userContent').text()) {
-    	// 	// console.log($(a.target.innerHTML).find('.userContent'));
-
-    	// 	// window.setTimeout(function() {
-    	// 	// 	userContentEach($(a.target.innerHTML).find('.userContent'));
-    	// 	// }, 500);
-	    	
-	    // }
-    // });
-
- //    user_content = $('.userContent');
-	// userContentEach(user_content);
-	
-	// document.querySelector(NOBBB.config.facebook.content_logo).onmousedown = function(){this.itemsChanged = {}; window.location.href =  NOBBB.config.facebook.content_logo_href;   } 
+	$('#u_0_e a').on('click', function() {
+		window.location.href =  NOBBB.config.facebook.content_logo_href;
+	});
 	
 };
 
