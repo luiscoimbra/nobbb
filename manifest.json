@@ -1,6 +1,6 @@
 {
   "name": "No BBB",
-  "version": "4",
+  "version": "4.0.1",
   "manifest_version": 2,
   "background": {
 	"scripts": ["back.js"]
@@ -26,9 +26,9 @@
 	"128":"resources/logo128.png"
   },
   "browser_action":{
-	"default_icon": "resources/logo19.png", 
-    "default_title": "NoBBB",      
-    "default_popup": "nobbb.html"  
+	"default_icon": "resources/logo19.png",
+    "default_title": "NoBBB",
+    "default_popup": "nobbb.html"
   },
   "content_scripts" :[{
 	"matches": ["http://www.facebook.com/*",

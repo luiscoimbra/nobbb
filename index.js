@@ -24,10 +24,9 @@ NOBBB.Util = {
 //window.setTimeout(function(){
 chrome.extension.sendRequest({method: "getLocalStorage"}, function(response) {
 
-	//console.log('response', response);
 	if (response.frozen_init){
 		NOBBB.config.general = {
-		
+
 			social_network: null, // current social network
 			twitter: NOBBB.Util.bool(response.twitter),
 			facebook: NOBBB.Util.bool(response.facebook),
@@ -41,11 +40,11 @@ chrome.extension.sendRequest({method: "getLocalStorage"}, function(response) {
 			bgcolor: response.bgcolor,
 			default_words: response.words,
 			divcontent_class: 'noBBBblocker'
-			
+
 		}
 	} else {
 		NOBBB.config.general = {
-		
+
 			social_network: null, // current social network
 			twitter: true,
 			facebook: true,
@@ -59,18 +58,18 @@ chrome.extension.sendRequest({method: "getLocalStorage"}, function(response) {
 			bgcolor: '#F0E68C',
 			default_words: 'bbb|big ?brother|boninho|paredao|estalecas|casa ? de ?vidro',
 			divcontent_class: 'noBBBblocker'
-			
+
 		}
 	}
-	
+
 	jQuery(document).ready(function() {
 		NOBBB.init();
 	});
-  
+
 });
 //},1000);
 
-// Class 
+// Class
 
 
 function getColor(string) {
@@ -84,7 +83,7 @@ function getColor(string) {
 
 
 NOBBB.config.facebook = {
-	
+
 	content_stream: '#contentArea',
 	content_list_selector: 'div._5uch',
 	content_logo: '#pageLogo',
@@ -94,11 +93,11 @@ NOBBB.config.facebook = {
 		+"' style='float:left' ><div style='margin:2px 0 0 30px;'>conte&uacute;do bloqueado pela extens&atilde;o NoBBB, se quiser ver clique aqui<br>"
 		+"<a style='font-size: 9px; float:right;' href='http://facebook.com/luiscesarcoimbra' target='_blank'>by luiscoimbra</a></div></div>")
 	}
-	
+
 }
 
 NOBBB.config.twitter = {
-	
+
 	content_stream: '.stream-container',
 	content_logo: '#pageLogo',
 	content_logo_href: 'http://www.facebook.com/?ref=logo',
@@ -119,25 +118,8 @@ NOBBB.config.portal = {
 
 
 
-// Make control
-
-
-/*
-c*hrome.extension.onRequest.addListener(
-  function(request, sender, sendResponse) {
-	console.log(NOBBB);
-    console.log(request, sender, sendResponse);
-  }
-);
-*/
-
-// \\Make control
-
-
-
 NOBBB.init = function(){
 
-	//console.log('NOBBB',NOBBB);
 	NOBBB.util.getSocialNetwork();
 
 	switch(NOBBB.config.general.social_network){
@@ -184,9 +166,9 @@ NOBBB.init = function(){
 NOBBB.util = {};
 
 NOBBB.util.getSocialNetwork = function(){
-	
+
 	var url = document.location.href;
-	var sn = ""; 
+	var sn = "";
 	if(url.match(/facebook.com/)){
 		sn = "facebook";
 	}
@@ -216,7 +198,7 @@ NOBBB.util.getSocialNetwork = function(){
 	}
 	NOBBB.config.general.social_network = sn;
 	return sn;
-	
+
 }
 
 
@@ -229,16 +211,15 @@ NOBBB.facebook = function(){
 	var parentEl, parentParentEl;
 
 	var userContentEach = function() {
-		$('.userContent').each(function() {
+		$('.userContentWrapper').each(function() {
 			if (!$(this).hasClass('nobbb_edited_content')) {
-				if ($(this).text().match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi'))) {
+				if ($(this).find('.userContent').text().match(new RegExp('(' + NOBBB.config.general.default_words + ')','gi'))) {
 					$(this).addClass('nobbb_edited_content');
-					parentEl = $(this).parent();
-					parentParentEl = parentEl.parent();
-					parentParentEl.find('.userContentWrapper').hide();
-					if (!parentParentEl.has('.nobbb_portal_container').length) {
-						parentParentEl.prepend(NOBBB.config.facebook.alert_component());
-						$('.nobbb_portal_container').on('click', function() {
+				  $(this).hide();
+					var parent = $(this).parent();
+					if (!parent.has('.nobbb_portal_container').length) {
+						parent.prepend(NOBBB.config.facebook.alert_component());
+						parent.find('.nobbb_portal_container').on('click', function() {
 							$(this).hide();
 							$(this).parent().find('.userContentWrapper').show();
 						});
@@ -246,7 +227,7 @@ NOBBB.facebook = function(){
 				}
 			}
 		});
-	};
+	}
 
 	$('#contentArea').on('DOMNodeInserted', function() {
 		userContentEach();
@@ -254,10 +235,10 @@ NOBBB.facebook = function(){
 
 	userContentEach();
 
-	$('#u_0_e a').on('click', function() {
+	$('[data-click=bluebar_logo] a').on('click', function() {
 		window.location.href =  NOBBB.config.facebook.content_logo_href;
 	});
-	
+
 };
 
 NOBBB.twitter = function(){
@@ -323,10 +304,9 @@ NOBBB.yahoo = function(){
 NOBBB.portal = function (main_area, portal){
 
 	var searchBBB = function(){
-		
+
 		if (portal && portal === "terra") {
 			items = main_contentArea.find('p');
-			console.log('terra selec', items);
 		} else {
 			items = main_contentArea.find('a');
 		}
@@ -341,14 +321,12 @@ NOBBB.portal = function (main_area, portal){
 			event.preventDefault();
 			event.stopPropagation();
 			$(this).parent().find('.nobbb_portal_container').remove();
-			
+
 		});
 
 	};
-	
+
 	var main_contentArea = $(main_area);
 	//main_contentArea.addEventListener('DOMNodeInserted', function(){ searchBBB(); });
 	searchBBB();
 }
-
-
