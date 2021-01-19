@@ -1,0 +1,18 @@
+{
+  "name": "No BBB",
+  "version": "5.0.0",
+  "description": "Quer bloquear textos relacionados ao Big Brother no facebook?",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["https://www.facebook.com/*"],
+      "js": ["app.bs.js"]
+    }
+  ],
+  "icons": {
+    "16": "resources/logo19.png",
+    "48": "resources/logo48.png",
+    "128": "resources/logo128.png"
+  },
+  "web_accessible_resources": ["resources/logo19.png"]
+}
