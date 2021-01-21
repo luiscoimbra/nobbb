@@ -2,7 +2,7 @@
 'use strict';
 
 
-var warnContainer = "<div style='cursor: pointer; padding:10px; margin:15px 0; border-radius: 8px; height:18px; background:#F0E68C;'><img src='" + chrome.extension.getURL("resources/logo19.png") + "' style='float:left' ><div style='margin:2px 0 0 30px;'>conte&uacute;do bloqueado pela extens&atilde;o NoBBB, se quiser ver clique aqui<br></div></div>";
+var warnContainer = "\n  <div style=\'cursor: pointer; padding:10px; margin:15px 0; border-radius: 8px; height:18px; background:#F0E68C;\'>\n    <img src=\"" + chrome.extension.getURL("resources/logo19.png") + "\" style=\'float:left\'>\n    <div style=\'margin:2px 0 0 30px;\'>\n      conte&uacute;do bloqueado pela extens&atilde;o NoBBB, clique para ver \n    </div>\n  </div>\n  ";
 
 var textPattern = /bbb|big ?brother|boninho|paredao|estalecas|leifert|casa ? de ?vidro/gi;
 

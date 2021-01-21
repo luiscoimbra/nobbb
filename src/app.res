@@ -12,19 +12,17 @@ and target = {
 }
 
 %%private(
-  // let domEventContentLoaded = "DOMContentLoaded"
   let domEventNodeInserted = "DOMNodeInserted"
   let feedContainerSelector = "[role='feed']"
-  let warnContainer =
-    "<div style='cursor: pointer; padding:10px; margin:15px 0; border-radius: 8px; height:18px; background:#F0E68C;'>" ++
-    "<img src='" ++
-    chrome["extension"]["getURL"]("resources/logo19.png") ++
-    "' style='float:left' ><div style='margin:2px 0 0 30px;'>" ++
-    "conte&uacute;do bloqueado pela extens&atilde;o NoBBB, se quiser ver " ++
-    "clique aqui<br>" ++ "</div></div>"
-  let textPattern = %re(
-    "/bbb|big ?brother|boninho|paredao|estalecas|leifert|casa ? de ?vidro/gi"
-  )
+  let warnContainer = `
+  <div style='cursor: pointer; padding:10px; margin:15px 0; border-radius: 8px; height:18px; background:#F0E68C;'>
+    <img src="${chrome["extension"]["getURL"]("resources/logo19.png")}" style='float:left'>
+    <div style='margin:2px 0 0 30px;'>
+      conte&uacute;do bloqueado pela extens&atilde;o NoBBB, clique para ver 
+    </div>
+  </div>
+  `
+  let textPattern = %re("/bbb|big ?brother|boninho|paredao|estalecas|leifert|casa ? de ?vidro/gi")
 
   let containsPattern = element =>
     switch Js.String.match_(textPattern, element.target.innerText) {
